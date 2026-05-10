@@ -1,0 +1,1078 @@
+{
+  "baseline_total_latency_ms": 73508.01132712513,
+  "calibration_factor": 0.8,
+  "operator_calibration_factors": {},
+  "access_factors": {
+    "table_scan": 1.0,
+    "index_scan": 0.7,
+    "index_lookup": 0.5,
+    "range_scan": 0.8
+  },
+  "operator_factors": {
+    "nested_loop": {
+      "default": 1.2
+    },
+    "hash_join": {
+      "default": 1.0
+    },
+    "merge_join": {
+      "default": 1.1
+    },
+    "sort": {
+      "default": 1.0
+    },
+    "group": {
+      "default": 1.0
+    },
+    "unknown_join": {
+      "default": 1.0
+    }
+  },
+  "defaults": {
+    "default_selectivity": 0.5,
+    "join_selectivity": 1.0,
+    "split_ratio": 0.5
+  },
+  "actions": [
+    {
+      "type": "TableJoin",
+      "left_table": "CUSTOMER",
+      "right_table": "NATION",
+      "join_keys": [
+        "C_NATIONKEY",
+        "N_NATIONKEY"
+      ],
+      "join_type": "natural",
+      "select_columns": [
+        "CUSTOMER.C_CUSTKEY",
+        "CUSTOMER.C_NAME",
+        "CUSTOMER.C_ADDRESS",
+        "CUSTOMER.C_PHONE",
+        "CUSTOMER.C_ACCTBAL",
+        "CUSTOMER.C_MKTSEGMENT",
+        "CUSTOMER.C_COMMENT",
+        "NATION.N_NAME",
+        "NATION.N_REGIONKEY",
+        "NATION.N_COMMENT"
+      ],
+      "new_table": "customer_nation_join",
+      "keep_original": true
+    },
+    {
+      "type": "RedundantColumnAdd",
+      "src_table": "CUSTOMER",
+      "src_column": "C_NAME",
+      "dst_table": "ORDERS",
+      "dst_column": "CUSTOMER_NAME",
+      "join_keys": [
+        "CUSTOMER.C_CUSTKEY=ORDERS.O_CUSTKEY"
+      ]
+    },
+    {
+      "type": "TableSplit",
+      "source_table": "LINEITEM",
+      "new_tables": [
+        "LINEITEM_part1",
+        "LINEITEM_split2"
+      ],
+      "column_map": {
+        "LINEITEM_part1": [
+          "L_ORDERKEY",
+          "L_PARTKEY",
+          "L_SUPPKEY",
+          "L_LINENUMBER",
+          "L_QUANTITY",
+          "L_EXTENDEDPRICE",
+          "L_DISCOUNT",
+          "L_TAX",
+          "L_SHIPDATE",
+          "L_COMMITDATE",
+          "L_RECEIPTDATE",
+          "L_SHIPMODE"
+        ],
+        "LINEITEM_split2": [
+          "L_ORDERKEY",
+          "L_LINENUMBER",
+          "L_RETURNFLAG",
+          "L_LINESTATUS",
+          "L_SHIPINSTRUCT",
+          "L_COMMENT"
+        ]
+      },
+      "keep_original": true
+    },
+    {
+      "type": "HorizontalSplit",
+      "table": "ORDERS",
+      "predicate": "O_ORDERDATE >= date '1994-01-01' and O_ORDERDATE < date '1994-01-01' + interval 1 year",
+      "table_true": "ORDERS_h1",
+      "table_false": "ORDERS_split2",
+      "keep_original": true
+    },
+    {
+      "type": "RedundantColumnAdd",
+      "src_table": "NATION",
+      "src_column": "N_NAME",
+      "dst_table": "SUPPLIER",
+      "dst_column": "NATION_NAME",
+      "join_keys": [
+        "NATION.N_NATIONKEY=SUPPLIER.S_NATIONKEY"
+      ]
+    }
+  ],
+  "per_sql": {
+    "d1": {
+      "base_cost": 1604572538.5257254,
+      "final_cost": 1604572538.5257254,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 9965.357006527483,
+      "final_latency_ms": 9965.357006527483,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d10": {
+      "base_cost": 63059832.61853441,
+      "final_cost": 63059832.61853441,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 2101.812679320574,
+      "final_latency_ms": 2101.812679320574,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d11": {
+      "base_cost": 843.0,
+      "final_cost": 843.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 486.38879507780075,
+      "final_latency_ms": 486.38879507780075,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d12": {
+      "base_cost": 972.0,
+      "final_cost": 1172.0,
+      "cost_ratio": 1.205761316872428,
+      "base_latency_ms": 3196.2182093411684,
+      "final_latency_ms": 3722.3446635537066,
+      "raw_delta_ms": 526.1264542125382,
+      "delta_ms": 526.1264542125382,
+      "baseline": {
+        "tables": {
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 485.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 585.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d13": {
+      "base_cost": 87323221.70580342,
+      "final_cost": 1172.0,
+      "cost_ratio": 1.3421401284855594e-05,
+      "base_latency_ms": 11195.626143366098,
+      "final_latency_ms": 2239.2454374661047,
+      "raw_delta_ms": -8956.380705899994,
+      "delta_ms": -8956.380705899994,
+      "baseline": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          },
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 485.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 585.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d14": {
+      "base_cost": 763089124.0,
+      "final_cost": 763089124.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 2433.257014490664,
+      "final_latency_ms": 2433.257014490664,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      }
+    },
+    "d15": {
+      "base_cost": 1526179310.6,
+      "final_cost": 1526179450.6,
+      "cost_ratio": 1.0000000917323404,
+      "base_latency_ms": 6035.20517796278,
+      "final_latency_ms": 6035.205620861577,
+      "raw_delta_ms": 0.000442898796791269,
+      "delta_ms": 0.000442898796791269,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 759.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 859.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      }
+    },
+    "d16": {
+      "base_cost": 1616.0,
+      "final_cost": 1716.0,
+      "cost_ratio": 1.061881188118812,
+      "base_latency_ms": 1566.0148179158568,
+      "final_latency_ms": 1643.5403039512953,
+      "raw_delta_ms": 77.52548603543846,
+      "delta_ms": 77.52548603543846,
+      "baseline": {
+        "tables": {
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 759.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": true
+      },
+      "after": {
+        "tables": {
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 859.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": true
+      }
+    },
+    "d17": {
+      "base_cost": 763089124.0,
+      "final_cost": 763089124.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 635.1447589695454,
+      "final_latency_ms": 635.1447589695454,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      }
+    },
+    "d18": {
+      "base_cost": 1292305775.8262181,
+      "final_cost": 1292305775.8262181,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 2632.1626529097557,
+      "final_latency_ms": 2632.1626529097557,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          },
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": true
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          },
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": true
+      }
+    },
+    "d19": {
+      "base_cost": 763089124.0,
+      "final_cost": 763089124.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 264.40257392823696,
+      "final_latency_ms": 264.40257392823696,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      }
+    },
+    "d2": {
+      "base_cost": 1476.0,
+      "final_cost": 1476.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 122.7313531562686,
+      "final_latency_ms": 122.7313531562686,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d20": {
+      "base_cost": 841485780.8580381,
+      "final_cost": 841485880.8580381,
+      "cost_ratio": 1.000000118837421,
+      "base_latency_ms": 678.700634278357,
+      "final_latency_ms": 678.7006988023834,
+      "raw_delta_ms": 6.452402635659382e-05,
+      "delta_ms": 6.452402635659382e-05,
+      "baseline": {
+        "tables": {
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 759.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "PARTSUPP": {
+            "rows": 2.0,
+            "width": 841.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 859.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d21": {
+      "base_cost": 31095813339434.367,
+      "final_cost": 31095813339534.367,
+      "cost_ratio": 1.0000000000032159,
+      "base_latency_ms": 7745.034357532859,
+      "final_latency_ms": 7745.034357552785,
+      "raw_delta_ms": 1.9926119421143085e-08,
+      "delta_ms": 1.9926119421143085e-08,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 759.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [
+          {
+            "left_table": "LINEITEM",
+            "left_column": "l_orderkey",
+            "right_table": "LINEITEM",
+            "right_column": "l_orderkey",
+            "join_type": "nested_loop",
+            "join_selectivity": 1.0,
+            "operator_factor": 1.0
+          },
+          {
+            "left_table": "LINEITEM",
+            "left_column": "l_orderkey",
+            "right_table": "LINEITEM",
+            "right_column": "l_orderkey",
+            "join_type": "nested_loop",
+            "join_selectivity": 1.0,
+            "operator_factor": 1.0
+          }
+        ],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 859.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [
+          {
+            "left_table": "LINEITEM",
+            "left_column": "l_orderkey",
+            "right_table": "LINEITEM",
+            "right_column": "l_orderkey",
+            "join_type": "nested_loop",
+            "join_selectivity": 1.0,
+            "operator_factor": 1.0
+          },
+          {
+            "left_table": "LINEITEM",
+            "left_column": "l_orderkey",
+            "right_table": "LINEITEM",
+            "right_column": "l_orderkey",
+            "join_type": "nested_loop",
+            "join_selectivity": 1.0,
+            "operator_factor": 1.0
+          }
+        ],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d22": {
+      "base_cost": 123716503.70580342,
+      "final_cost": 821.0,
+      "cost_ratio": 6.636139685553429e-06,
+      "base_latency_ms": 200.50385687500238,
+      "final_latency_ms": 40.101835832281836,
+      "raw_delta_ms": -160.40202104272055,
+      "delta_ms": -160.40202104272055,
+      "baseline": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 485.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 585.0,
+            "access_mode": "index_scan",
+            "access_factor": 0.7
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d3": {
+      "base_cost": 63059832.61853441,
+      "final_cost": 63059832.61853441,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 3998.6076029017568,
+      "final_latency_ms": 3998.6076029017568,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d4": {
+      "base_cost": 841484430.969828,
+      "final_cost": 841484630.969828,
+      "cost_ratio": 1.0000002376752233,
+      "base_latency_ms": 862.4559808522463,
+      "final_latency_ms": 862.4561448397806,
+      "raw_delta_ms": 0.00016398753427893098,
+      "delta_ms": 0.00016398753427893098,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 485.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          },
+          "ORDERS": {
+            "rows": 2.0,
+            "width": 585.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d5": {
+      "base_cost": 63059832.61853441,
+      "final_cost": 63059832.61853441,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 2273.97586312145,
+      "final_latency_ms": 2273.97586312145,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "CUSTOMER": {
+            "rows": 140570.0,
+            "width": 863.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d6": {
+      "base_cost": 1526178248.0,
+      "final_cost": 1526178248.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 1964.4334185868502,
+      "final_latency_ms": 1964.4334185868502,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "LINEITEM": {
+            "rows": 3599477.0,
+            "width": 424.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": false,
+        "has_group": false
+      }
+    },
+    "d7": {
+      "base_cost": 761.0,
+      "final_cost": 861.0,
+      "cost_ratio": 1.1314060446780552,
+      "base_latency_ms": 1784.39646307379,
+      "final_latency_ms": 1971.9808481538205,
+      "raw_delta_ms": 187.58438508003042,
+      "delta_ms": 187.58438508003042,
+      "baseline": {
+        "tables": {
+          "NATION": {
+            "rows": 0.0,
+            "width": 728.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 759.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "NATION": {
+            "rows": 0.0,
+            "width": 728.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "SUPPLIER": {
+            "rows": 2.0,
+            "width": 859.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d8": {
+      "base_cost": 1256.0,
+      "final_cost": 1256.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 6628.131969831884,
+      "final_latency_ms": 6628.131969831884,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "NATION": {
+            "rows": 0.0,
+            "width": 728.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "NATION": {
+            "rows": 0.0,
+            "width": 728.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          },
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "table_scan",
+            "access_factor": 1.0
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    },
+    "d9": {
+      "base_cost": 629.0,
+      "final_cost": 629.0,
+      "cost_ratio": 1.0,
+      "base_latency_ms": 6737.449997104704,
+      "final_latency_ms": 6737.449997104704,
+      "raw_delta_ms": 0.0,
+      "delta_ms": 0.0,
+      "baseline": {
+        "tables": {
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      },
+      "after": {
+        "tables": {
+          "PART": {
+            "rows": 2.0,
+            "width": 627.0,
+            "access_mode": "index_lookup",
+            "access_factor": 0.5
+          }
+        },
+        "joins": [],
+        "has_sort": true,
+        "has_group": false
+      }
+    }
+  },
+  "skipped_sql": []
+}

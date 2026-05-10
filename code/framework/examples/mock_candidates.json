@@ -1,0 +1,15 @@
+[
+  {
+    "candidate_id": "c1",
+    "actions": [
+      {
+        "type": "ColumnSplit",
+        "table": "CUSTOMER",
+        "column": "C_NAME",
+        "delimiter": " ",
+        "new_columns": ["C_NAME_PART1", "C_NAME_PART2"],
+        "keep_original": true
+      }
+    ]
+  }
+]

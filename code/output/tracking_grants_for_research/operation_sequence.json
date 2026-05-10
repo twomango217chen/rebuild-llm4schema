@@ -1,0 +1,19 @@
+[
+  {
+    "type": "TableJoin",
+    "left_table": "Projects",
+    "right_table": "Tasks",
+    "join_keys": [
+      "project_id"
+    ],
+    "join_type": "natural",
+    "select_columns": [
+      "Projects.project_id",
+      "Projects.organisation_id",
+      "Tasks.task_id",
+      "Tasks.task_details"
+    ],
+    "new_table": "Projects_Tasks_Join",
+    "keep_original": true
+  }
+]

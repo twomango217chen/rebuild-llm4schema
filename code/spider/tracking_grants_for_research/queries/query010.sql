@@ -1,0 +1,1 @@
+SELECT T1.project_details FROM Projects AS T1 JOIN Project_Outcomes AS T2 ON T1.project_id  =  T2.project_id JOIN Research_Outcomes AS T3 ON T2.outcome_code  =  T3.outcome_code WHERE T3.outcome_description LIKE '%Published%';

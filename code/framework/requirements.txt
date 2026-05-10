@@ -1,0 +1,5 @@
+aiohttp>=3.9.0
+PyYAML>=6.0.1
+sqlparse>=0.4.4
+pymysql>=1.1.0
+sqlglot>=25.0.0

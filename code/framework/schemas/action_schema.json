@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "candidate_id": {"type": "string"},
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ColumnSplit",
+              "TableSplit",
+              "TableJoin",
+              "HorizontalSplit",
+              "HorizontalMerge",
+              "RedundantColumnAdd",
+              "RedundantColumnDrop"
+            ]
+          },
+          "table": {"type": "string"},
+          "column": {"type": "string"},
+          "delimiter": {"type": "string"},
+          "new_columns": {"type": "array", "items": {"type": "string"}},
+          "keep_original": {"type": "boolean"},
+          "source_table": {"type": "string"},
+          "new_tables": {"type": "array", "items": {"type": "string"}},
+          "column_map": {
+            "oneOf": [
+              {"type": "array", "items": {"type": "string"}},
+              {
+                "type": "object",
+                "additionalProperties": {"type": "array", "items": {"type": "string"}}
+              }
+            ]
+          },
+          "left_table": {"type": "string"},
+          "right_table": {"type": "string"},
+          "join_keys": {"type": "array", "items": {"type": "string"}},
+          "join_type": {"type": "string"},
+          "new_table": {"type": "string"},
+          "select_columns": {"type": "array", "items": {"type": "string"}},
+          "predicate": {"type": "string"},
+          "table_true": {"type": "string"},
+          "table_false": {"type": "string"},
+          "table_a": {"type": "string"},
+          "table_b": {"type": "string"},
+          "src_table": {"type": "string"},
+          "dst_table": {"type": "string"},
+          "src_column": {"type": "string"},
+          "dst_column": {"type": "string"},
+          "origin_table": {"type": "string"}
+        },
+        "required": ["type"],
+        "additionalProperties": true
+      }
+    }
+  },
+  "required": ["candidate_id", "actions"],
+  "additionalProperties": true
+}

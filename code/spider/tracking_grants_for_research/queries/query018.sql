@@ -1,0 +1,1 @@
+SELECT T1.outcome_description FROM Research_Outcomes AS T1 JOIN Project_Outcomes AS T2 ON T1.outcome_code  =  T2.outcome_code JOIN Projects AS T3 ON T2.project_id  =  T3.project_id WHERE T3.project_details  =  'sint';

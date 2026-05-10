@@ -1,0 +1,1 @@
+SELECT organisation_details FROM Organisations AS T1 JOIN Organisation_Types AS T2 ON T1.organisation_type  =  T2.organisation_type WHERE T2.organisation_type_description  =  'Sponsor' ORDER BY organisation_details;

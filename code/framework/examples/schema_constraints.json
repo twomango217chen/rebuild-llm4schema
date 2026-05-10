@@ -1,0 +1,18 @@
+{
+  "tables": {
+    "ORDERS": {
+      "primary_key": ["O_ORDERKEY"],
+      "foreign_keys": [
+        {"column": "O_CUSTKEY", "ref_table": "CUSTOMER", "ref_column": "C_CUSTKEY"}
+      ]
+    },
+    "LINEITEM": {
+      "primary_key": ["L_ORDERKEY", "L_LINENUMBER"],
+      "foreign_keys": [
+        {"column": "L_ORDERKEY", "ref_table": "ORDERS", "ref_column": "O_ORDERKEY"},
+        {"column": "L_PARTKEY", "ref_table": "PART", "ref_column": "P_PARTKEY"},
+        {"column": "L_SUPPKEY", "ref_table": "SUPPLIER", "ref_column": "S_SUPPKEY"}
+      ]
+    }
+  }
+}

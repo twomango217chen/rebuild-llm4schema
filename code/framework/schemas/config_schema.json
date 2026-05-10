@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "output_dir": {"type": "string"},
+        "llm_log_overwrite": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "llm": {
+      "type": "object",
+      "properties": {
+        "mode": {"type": "string", "enum": ["live"]}
+      },
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "schema_source": {
+          "type": "string",
+          "enum": ["information_schema", "schema_sql", "schema_json"]
+        },
+        "schema_sql_path": {"type": "string"},
+        "schema_constraints_path": {"type": "string"},
+        "collect_explain": {"type": "boolean"},
+        "collect_selectivity": {"type": "boolean"},
+        "selectivity_max_predicates": {"type": "integer"},
+        "selectivity_max_per_sql": {"type": "integer"},
+        "selectivity_output_path": {"type": "string"},
+        "selectivity_coverage_path": {"type": "string"},
+        "explain_only": {"type": "boolean"},
+        "overwrite_explain": {"type": "boolean"},
+        "require_metrics": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "mysql": {"type": "object"},
+    "workload": {"type": "object"},
+    "storage": {"type": "object"},
+    "performance": {
+      "type": "object",
+      "properties": {
+        "default_selectivity": {"type": "number"},
+        "join_selectivity": {"type": "number"},
+        "split_ratio": {"type": "number"},
+        "column_width_factor": {"type": "number"},
+        "access_factors": {"type": "object"},
+        "operator_factors": {"type": "object"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

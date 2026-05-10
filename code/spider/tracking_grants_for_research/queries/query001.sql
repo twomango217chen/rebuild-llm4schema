@@ -1,0 +1,1 @@
+SELECT T1.grant_amount FROM Grants AS T1 JOIN Documents AS T2 ON T1.grant_id  =  T2.grant_id WHERE T2.sent_date  <  '1986-08-26 20:49:27' INTERSECT SELECT grant_amount FROM Grants WHERE grant_end_date  >  '1989-03-16 18:27:16';

@@ -1,0 +1,104 @@
+project:
+  name: schema_tuning
+  output_dir: ./output
+  llm_log_overwrite: true
+llm:
+  mode: live
+  parallel: 1
+  max_rounds: 25
+  temperature: 0.2
+  response_format: json
+  api_key_env: sk-1389cc020745441787616a6efa06a91b
+  max_nonpositive_streak: 3
+  api_url_env: https://api.deepseek.com
+  api_base_env: https://api.deepseek.com/v1
+  model_env: LLM_MODEL
+  mock_candidates_file: ./framework/examples/mock_candidates.json
+  mock_candidates_json: []
+  single_candidate: {}
+prompt:
+  template_path: ./references/prompt.md
+metadata:
+  schema_source: information_schema
+  schema_sql_path: schema.sql
+  schema_constraints_path: ''
+  collect_explain: true
+  collect_selectivity: true
+  selectivity_max_predicates: 100
+  selectivity_max_per_sql: 5
+  selectivity_output_path: selectivity_samples.json
+  selectivity_coverage_path: selectivity_coverage.json
+  explain_only: false
+  overwrite_explain: true
+  require_metrics: false
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: 123!@#200
+  database: tpcch
+workload:
+  dataset_root: /var/lib/mysql-files
+  sql_dir: /LLM-for-DB-Tuning/tpch/dbgen/queries/generated
+  metrics_csv: workload/metrics.csv
+  explain_dir: workload/explain
+  run_repetitions: 1
+  warmup_runs: 0
+storage:
+  max_total_bytes: 0
+  overhead_factor: 1.0
+  split_ratio: 0.5
+performance:
+  metric: total_latency
+  default_selectivity: 0.5
+  join_selectivity: 1.0
+  split_ratio: 0.5
+  column_width_factor: 1.0
+  breakdown_output_path: performance_breakdown.json
+  access_factors:
+    table_scan: 1.0
+    index_scan: 0.7
+    index_lookup: 0.5
+    range_scan: 0.8
+  operator_factors:
+    nested_loop: 1.2
+    hash_join: 1.0
+    merge_join: 1.1
+    sort: 1.0
+    group: 1.0
+    unknown_join: 1.0
+  calibration:
+    enabled: true
+    global_factor: 1.0
+    operator_factors:
+      nested_loop: 1.0
+      hash_join: 1.0
+      merge_join: 1.0
+      unknown_join: 1.0
+      sort: 1.0
+      group: 1.0
+    latency_scale: 1.0
+schema_apply:
+  enabled: true
+  dry_run: true
+  backup_on_drop: true
+  output_dir: ./output
+sql_rewrite:
+  enabled: true
+  output_dir: ./output/sql_rewrite
+mcts:
+  enabled: true
+  prompt_template_path: ./references/mcts_prompt.md
+  max_nodes: 80
+  max_depth: 10
+  max_attempts_per_node: 3
+  alpha: 0.1
+  beta: 0.7
+  c: 1.2
+  seed: 7
+  reject_positive_delta: true
+  positive_delta_epsilon: 0.0
+  reward:
+    latency_weight: 1.0
+    storage_penalty_weight: 1.0
+    storage_delta_weight: -0.5

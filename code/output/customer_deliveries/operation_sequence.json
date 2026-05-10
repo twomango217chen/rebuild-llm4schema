@@ -1,0 +1,104 @@
+[
+  {
+    "type": "TableSplit",
+    "source_table": "customers",
+    "new_tables": ["customers_hot", "customers_cold"],
+    "column_map": {
+      "customers_hot": ["customer_id", "customer_name", "payment_method", "customer_email"],
+      "customers_cold": ["customer_id", "customer_phone", "date_became_customer"]
+    },
+    "keep_original": true
+  },
+  {
+    "type": "RedundantColumnAdd",
+    "src_table": "customers",
+    "src_column": "customer_name",
+    "dst_table": "regular_orders",
+    "dst_column": "customer_name_copy"
+  },
+  {
+    "type": "TableJoin",
+    "left_table": "actual_orders",
+    "right_table": "regular_orders",
+    "new_table": "actual_orders_regular_orders_join",
+    "join_keys": ["actual_orders.regular_order_id=regular_orders.regular_order_id"],
+    "join_type": "left",
+    "keep_original": true,
+    "select_columns": ["actual_orders.*", "regular_orders.*"]
+  },
+  {
+    "type": "TableJoin",
+    "left_table": "products",
+    "right_table": "regular_order_products",
+    "new_table": "products_regular_order_products_join_v2",
+    "join_keys": ["products.product_id=regular_order_products.product_id"],
+    "join_type": "left",
+    "keep_original": true,
+    "select_columns": ["products.*", "regular_order_products.*"]
+  },
+  {
+    "type": "TableJoin",
+    "left_table": "addresses",
+    "right_table": "employees",
+    "new_table": "addresses_employees_join",
+    "join_keys": ["addresses.address_id=employees.employee_address_id"],
+    "join_type": "left",
+    "keep_original": true,
+    "select_columns": ["addresses.*", "employees.*"]
+  },
+  {
+    "type": "HorizontalSplit",
+    "table": "customers",
+    "predicate": "payment_method = 'Visa'",
+    "table_true": "customers_visa",
+    "table_false": "customers_non_visa",
+    "keep_original": true
+  },
+  {
+    "type": "TableJoin",
+    "left_table": "addresses",
+    "right_table": "delivery_route_locations",
+    "new_table": "addresses_delivery_route_locations_join",
+    "join_keys": ["addresses.address_id=delivery_route_locations.address_id"],
+    "join_type": "left",
+    "keep_original": true,
+    "select_columns": ["addresses.*", "delivery_route_locations.*"]
+  },
+  {
+    "type": "RedundantColumnAdd",
+    "src_table": "addresses",
+    "src_column": "state_province_county",
+    "dst_table": "customer_addresses",
+    "dst_column": "state_province_county_copy"
+  },
+  {
+    "type": "RedundantColumnAdd",
+    "src_table": "customers",
+    "src_column": "payment_method",
+    "dst_table": "regular_orders",
+    "dst_column": "payment_method_copy"
+  },
+  {
+    "type": "HorizontalSplit",
+    "table": "addresses",
+    "predicate": "address_id NOT IN (SELECT employee_address_id FROM employees)",
+    "table_true": "addresses_non_employee",
+    "table_false": "addresses_employee",
+    "keep_original": true
+  },
+  {
+    "type": "RedundantColumnAdd",
+    "src_table": "customers",
+    "src_column": "customer_email",
+    "dst_table": "regular_orders",
+    "dst_column": "customer_email_copy"
+  },
+  {
+    "type": "HorizontalSplit",
+    "table": "actual_orders",
+    "predicate": "order_status_code = 'Success'",
+    "table_true": "actual_orders_success",
+    "table_false": "actual_orders_other",
+    "keep_original": true
+  }
+]
